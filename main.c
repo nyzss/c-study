@@ -10,6 +10,9 @@ typedef struct {
 int resize_vec(c_vector **);
 c_vector new_vec(int);
 void push_single(c_vector *, int);
+void push_multiple(c_vector *, int[], int);
+c_vector from_arr(int[], int);
+void print_vec(c_vector);
 
 c_vector new_vec(int initial_capacity) {
   int *arr = (int *)malloc(initial_capacity * sizeof(int));
@@ -27,8 +30,8 @@ void push_single(c_vector *vec, int data) {
   vec->len += 1;
 }
 
-void push_multiple(c_vector *vec, int data_len, int data[data_len]) {
-  if (vec->len + data_len > vec->capacity) {
+void push_multiple(c_vector *vec, int data[], int data_len) {
+  if (vec->len + data_len >= vec->capacity) {
     vec->capacity *= 2;
     vec->capacity += data_len;
     vec->data = realloc(vec->data, vec->capacity * sizeof(int));
@@ -58,18 +61,40 @@ int resize_vec(c_vector **vector) {
   return 0;
 }
 
+c_vector from_arr(int data[], int len) {
+  int capacity = 2 * len;
+  c_vector vec = new_vec(capacity);
+
+  push_multiple(&vec, data, len);
+
+  return vec;
+}
+
+void print_vec(c_vector vec) {
+  printf("--------------------------\n");
+  printf("len: %d\n", vec.len);
+  printf("cap: %d\n", vec.capacity);
+  printf("  --  \n");
+  for (int i = 0; i < vec.len; i++) {
+    printf("idx: %d, value: %d\n", i, vec.data[i]);
+  }
+  printf("--------------------------\n");
+}
+
 int main() {
   c_vector vec = new_vec(3);
 
   push_single(&vec, 101203);
   push_single(&vec, 1234);
   int arr[4] = {223, 99, 66, 1379};
-  push_multiple(&vec, 4, arr);
+  push_multiple(&vec, arr, 4);
 
-  printf("len: %d\n", vec.len);
-  printf("cap: %d\n", vec.capacity);
+  print_vec(vec);
 
-  for (int i = 0; i < vec.len; i++) {
-    printf("idx: %d, value: %d\n", i, vec.data[i]);
-  }
+  int some_arr[5] = {123182, 46540, 11, 0, 234};
+
+  c_vector vec_2 = from_arr(some_arr, 5);
+  push_single(&vec_2, 100);
+
+  print_vec(vec_2);
 }
