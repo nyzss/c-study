@@ -1,6 +1,6 @@
-@gcc main.c -o main.exe -Wall
+@gcc c_vector.c -o c_vector.exe -Wall
 
 
 @echo.
 
-@call .\main.exe
+@call .\c_vector.exe

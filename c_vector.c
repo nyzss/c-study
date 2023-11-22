@@ -1,18 +1,6 @@
+#include "c_vector.h"
 #include <stdio.h>
 #include <stdlib.h>
-
-typedef struct {
-  int *data;
-  int len;
-  int capacity;
-} c_vector;
-
-int resize_vec(c_vector **);
-c_vector new_vec(int);
-void push_single(c_vector *, int);
-void push_multiple(c_vector *, int[], int);
-c_vector from_arr(int[], int);
-void print_vec(c_vector);
 
 c_vector new_vec(int initial_capacity) {
   int *arr = (int *)malloc(initial_capacity * sizeof(int));
@@ -70,6 +58,11 @@ c_vector from_arr(int data[], int len) {
   return vec;
 }
 
+void free_vec(c_vector *vec) {
+  free(vec->data);
+  free(vec);
+}
+
 void print_vec(c_vector vec) {
   printf("--------------------------\n");
   printf("len: %d\n", vec.len);
@@ -97,4 +90,7 @@ int main() {
   push_single(&vec_2, 100);
 
   print_vec(vec_2);
+
+  free_vec(&vec);
+  free_vec(&vec_2);
 }
