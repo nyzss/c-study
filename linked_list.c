@@ -68,11 +68,18 @@ void pop(node_t *node) {
 // TODO:
 void pop_back(node_t *node) {
   node_t *tmp = node;
+  // NOTE: get the one before the latest -> change it to latest (which is stored
+  // in a tmp)
 
-  while (tmp != NULL) {
-    printf("data: %d", tmp->data);
+  // NOTE: returns the node just before the last one (so the new latest node
+  // after popping the current last one)
+  while (tmp->next->next != NULL) {
     tmp = tmp->next;
   };
+  node_t *last = tmp->next;
+
+  tmp->next = NULL;
+  free(last);
 }
 
 void push_back_multiple(node_t *node, int arr[], int len) {
@@ -107,6 +114,7 @@ int main() {
   int arr[] = {123, 667, 8834, 903, 112};
   int len = sizeof(arr) / sizeof(arr[0]);
   push_back_multiple(node, arr, len);
+  pop_back(node);
 
   print_ll(node);
 }
