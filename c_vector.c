@@ -91,6 +91,8 @@ int main() {
 
   print_vec(vec_2);
 
+  int *dt = vec_2.data;
+
   free_vec(&vec);
   free_vec(&vec_2);
 }
