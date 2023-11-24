@@ -96,6 +96,22 @@ void push_back_multiple(node_t *node, int arr[], int len) {
   }
 }
 
+void remove_val(node_t *node, int val) {
+  // if it's the first one then we just pop it out.
+  if (node->data == val) {
+    pop(node);
+  }
+
+  // iterate over the linked list, if the next node has the data that we are
+  // looking for then we set the current node's pointer to the one that is next
+  // to the one we found.
+  for (node_t *t = node; t != NULL; t = t->next) {
+    if (t->next->data == val) {
+      t->next = t->next->next;
+    }
+  }
+}
+
 void print_ll(node_t *node) {
   node_t *tmp = node;
 
@@ -115,6 +131,8 @@ int main() {
   int len = sizeof(arr) / sizeof(arr[0]);
   push_back_multiple(node, arr, len);
   pop_back(node);
+
+  remove_val(node, 903);
 
   print_ll(node);
 }
