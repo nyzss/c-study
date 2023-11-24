@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-// #include <string.h>
+
+// TODO: Implement a free hashmap func
+// TODO: Dynamically resize hashmap and re-hash every single key-value pair.
 
 typedef struct node_t {
   int data;
@@ -67,8 +69,6 @@ int hash(char *key, int ht_len) {
 
 // return 1 if exist, and return 0 if doesn't exist.
 int check_hash(hash_map *ht, int index) {
-  int len = ht->len;
-
   if (ht->buckets[index] == NULL) {
     return 0;
   }
@@ -96,9 +96,26 @@ void push(hash_map *ht, char *key, int data) {
   }
 }
 
+void print_hashmap(hash_map *ht) {
+
+  for (int i = 0; i < ht->len; i++) {
+    node_t *tmp = ht->buckets[i];
+
+    while (tmp != NULL) {
+      printf("index: %d, key: %s, data: %d\n", i, tmp->key, tmp->data);
+      tmp = tmp->next;
+    }
+  }
+}
+
 int main() {
-  int h_val = hash("car", 15);
-  int second_val = hash("huh", 15);
-  printf("hashed value: %d\n", h_val);
-  printf("hashed value: %d\n", second_val);
+
+  hash_map ht = create_map(15);
+
+  push(&ht, "car", 150123);
+  push(&ht, "hello world", 100);
+  push(&ht, "cool carand stuff", 75630);
+  push(&ht, "same hash", 1);
+  push(&ht, "same hash", 500);
+  print_hashmap(&ht);
 }
