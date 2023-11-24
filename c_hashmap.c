@@ -1,37 +1,27 @@
+#include "c_hashmap.h"
 #include <stdio.h>
 #include <stdlib.h>
 
 // TODO: Implement a free hashmap func
 // TODO: Dynamically resize hashmap and re-hash every single key-value pair.
-
-typedef struct node_t {
-  int data;
-  char *key;
-  struct node_t *next;
-} node_t;
-
-typedef struct {
-  int len;
-  node_t **buckets;
-} hash_map;
+// TODO: Use my own linked_list.c implementation with the hashmap
 
 size_t m_strlen(char *str) {
   int count = 0;
   while (str[count]) {
     count++;
   }
-
   return count;
 }
 
-hash_map create_map(int initial_size) {
+hashmap create_map(int initial_size) {
   node_t **ll_arr = (node_t **)malloc(initial_size * sizeof(node_t));
 
   for (int i = 0; i < initial_size; i++) {
     ll_arr[i] = NULL;
   }
 
-  hash_map ht = {.len = initial_size, .buckets = ll_arr};
+  hashmap ht = {.len = initial_size, .buckets = ll_arr};
 
   return ht;
 }
@@ -68,7 +58,7 @@ int hash(char *key, int ht_len) {
 }
 
 // return 1 if exist, and return 0 if doesn't exist.
-int check_hash(hash_map *ht, int index) {
+int check_hash(hashmap *ht, int index) {
   if (ht->buckets[index] == NULL) {
     return 0;
   }
@@ -76,7 +66,7 @@ int check_hash(hash_map *ht, int index) {
   return 1;
 }
 
-void push(hash_map *ht, char *key, int data) {
+void push(hashmap *ht, char *key, int data) {
   int len = ht->len;
 
   int index = hash(key, len);
@@ -96,7 +86,37 @@ void push(hash_map *ht, char *key, int data) {
   }
 }
 
-void print_hashmap(hash_map *ht) {
+void remove_key(hashmap *ht, char *key) {
+  int idx = hash(key, ht->len);
+
+  ht->buckets[idx] = NULL;
+}
+
+void remove_val(hashmap *ht, int val) {
+
+  for (int i = 0; i < ht->len; i++) {
+
+    node_t *head = ht->buckets[i];
+    if (head != NULL) {
+      if (head->data == val) {
+        if (head->next != NULL) {
+          ht->buckets[i] = head->next;
+        } else {
+          ht->buckets[i] = NULL;
+        }
+      }
+    }
+
+    for (node_t *t = head; t != NULL; t = t->next) {
+
+      if (t->next != NULL && t->next->data == val) {
+        t->next = t->next->next;
+      }
+    }
+  }
+}
+
+void print_hashmap(hashmap *ht) {
 
   for (int i = 0; i < ht->len; i++) {
     node_t *tmp = ht->buckets[i];
@@ -110,12 +130,17 @@ void print_hashmap(hash_map *ht) {
 
 int main() {
 
-  hash_map ht = create_map(15);
+  hashmap hmap = create_map(15);
+  hashmap *ht = &hmap;
 
-  push(&ht, "car", 150123);
-  push(&ht, "hello world", 100);
-  push(&ht, "cool carand stuff", 75630);
-  push(&ht, "same hash", 1);
-  push(&ht, "same hash", 500);
-  print_hashmap(&ht);
+  push(ht, "car", 150123);
+  push(ht, "hello world", 100);
+  push(ht, "cool carand stuff", 75630);
+  push(ht, "same hash", 1);
+  push(ht, "same hash", 500);
+
+  // remove_key(ht, "car");
+  // remove_val(ht, 500);
+  remove_val(ht, 100);
+  print_hashmap(ht);
 }
